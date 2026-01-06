@@ -22,13 +22,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-def get_base64_image(image_path):
-    try:
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except:
-        return None
-
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
@@ -38,12 +31,12 @@ st.markdown("""
     }
     
     .main {
-        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        background: #f5f5f5;
         padding: 0;
     }
     
     .stApp {
-        background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        background: #f5f5f5;
     }
     
     .header-container {
@@ -101,11 +94,11 @@ st.markdown("""
     }
     
     .metric-card {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
         padding: 1.8rem;
         border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        border: 1px solid rgba(0, 212, 255, 0.2);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border: 2px solid #00d4ff;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -123,40 +116,40 @@ st.markdown("""
     
     .metric-card:hover {
         transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
-        border-color: #00d4ff;
+        box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+        border-color: #0099ff;
     }
     
     div[data-testid="stMetricValue"] {
         font-size: 2.5rem;
         font-weight: 800;
-        color: #00d4ff !important;
+        color: #0066cc !important;
     }
     
     div[data-testid="stMetricLabel"] {
         font-size: 0.95rem;
-        color: #b8d4e8 !important;
+        color: #495057 !important;
         text-transform: uppercase;
         letter-spacing: 1.5px;
         font-weight: 600;
     }
     
     div[data-testid="stMetricDelta"] {
-        color: #4ade80 !important;
+        color: #28a745 !important;
         font-weight: 700;
     }
     
     .section-header {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #ffffff;
+        color: #1a1a2e;
         margin-top: 3rem;
         margin-bottom: 1.5rem;
         padding: 1rem 1.5rem;
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
         border-radius: 12px;
         border-left: 5px solid #00d4ff;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     }
     
     .stButton>button {
@@ -185,21 +178,21 @@ st.markdown("""
         border-left: 4px solid #00d4ff;
         margin-left: 1.5rem;
         margin-bottom: 1.5rem;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        background: #ffffff;
         border-radius: 0 12px 12px 0;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        color: #ffffff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        color: #333333;
         transition: all 0.3s ease;
     }
     
     .timeline-item:hover {
         transform: translateX(10px);
-        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
     }
     
     .message-log {
-        background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
-        color: #e0e0e0;
+        background: #ffffff;
+        color: #333333;
         padding: 1.5rem;
         border-radius: 12px;
         font-family: 'Courier New', monospace;
@@ -207,13 +200,13 @@ st.markdown("""
         max-height: 450px;
         overflow-y: auto;
         margin-bottom: 1.5rem;
-        border: 1px solid rgba(0, 212, 255, 0.3);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        border: 2px solid #e0e0e0;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     }
     
     .message-line {
         padding: 0.5rem;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+        border-bottom: 1px solid #e0e0e0;
         transition: background 0.2s ease;
     }
     
@@ -222,35 +215,35 @@ st.markdown("""
     }
     
     .message-request {
-        color: #fbbf24;
+        color: #f59e0b;
     }
     
     .message-response {
-        color: #4ade80;
+        color: #10b981;
     }
     
     .message-transfer {
-        color: #60a5fa;
+        color: #0099ff;
     }
     
     .message-alert {
-        color: #f87171;
+        color: #ef4444;
     }
     
     .agent-status-card {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        background: #ffffff;
         padding: 1.2rem;
         border-radius: 12px;
-        border: 1px solid rgba(0, 212, 255, 0.2);
+        border: 2px solid #e0e0e0;
         margin-bottom: 1rem;
-        color: #ffffff;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        color: #333333;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         transition: all 0.3s ease;
     }
     
     .agent-status-card:hover {
         border-color: #00d4ff;
-        box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+        box-shadow: 0 6px 20px rgba(0, 212, 255, 0.2);
     }
     
     .badge-active {
@@ -287,37 +280,33 @@ st.markdown("""
     }
     
     .stExpander {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        background: #ffffff;
         border-radius: 12px;
-        border: 1px solid rgba(0, 212, 255, 0.2);
+        border: 2px solid #e0e0e0;
         margin-bottom: 1rem;
     }
     
     div[data-testid="stExpander"] {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        border: 1px solid rgba(0, 212, 255, 0.2);
+        background: #ffffff;
+        border: 2px solid #e0e0e0;
     }
     
     .sidebar .sidebar-content {
-        background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        background: #ffffff;
     }
     
     section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0f2027 0%, #203a43 100%);
+        background: #ffffff;
     }
     
     section[data-testid="stSidebar"] > div {
-        background: linear-gradient(180deg, #0f2027 0%, #203a43 100%);
+        background: #ffffff;
     }
     
     .stDataFrame {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        background: #ffffff;
         border-radius: 12px;
         overflow: hidden;
-    }
-    
-    table {
-        color: #ffffff !important;
     }
     
     .footer-container {
@@ -327,7 +316,7 @@ st.markdown("""
         text-align: center;
         margin-top: 3rem;
         border-top: 3px solid #00d4ff;
-        box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+        box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
     }
     
     .footer-title {
@@ -355,12 +344,8 @@ st.markdown("""
         background: linear-gradient(90deg, #00d4ff 0%, #0099ff 100%);
     }
     
-    .stCheckbox {
-        color: #ffffff;
-    }
-    
     label {
-        color: #ffffff !important;
+        color: #333333 !important;
         font-weight: 500;
     }
 </style>
@@ -458,7 +443,6 @@ class BayesianCrisisPredictor:
     
     def get_recommendations(self, city_state):
         crisis_prob = self.predict_crisis_probability(city_state)
-        ml_class = self.classify_risk_ml(city_state)
         
         if crisis_prob >= 0.75:
             return "CRITICAL: Immediate coordinator intervention required"
@@ -675,7 +659,7 @@ def create_agent_network_graph(coordinator, env):
                     x=[x0, x1, None],
                     y=[y0, y1, None],
                     mode='lines',
-                    line=dict(width=2, color='#4a5568', dash='dot'),
+                    line=dict(width=2, color='#999999', dash='dot'),
                     hoverinfo='none',
                     showlegend=False
                 )
@@ -720,21 +704,21 @@ def create_agent_network_graph(coordinator, env):
         ),
         text=node_text,
         textposition='top center',
-        textfont=dict(size=11, color='white', family='Poppins', weight=600),
+        textfont=dict(size=11, color='#333333', family='Poppins', weight=600),
         hoverinfo='text'
     )
     
     fig = go.Figure(data=edge_trace_report + edge_trace_transfer + [node_trace])
     
     fig.update_layout(
-        title=dict(text='Agent Communication Network', font=dict(size=20, color='white', weight=700)),
+        title=dict(text='Agent Communication Network', font=dict(size=20, color='#333333', weight=700)),
         showlegend=False,
         hovermode='closest',
         margin=dict(b=0, l=0, r=0, t=60),
         xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         height=550,
-        plot_bgcolor='rgba(26, 26, 46, 0.5)',
+        plot_bgcolor='#ffffff',
         paper_bgcolor='rgba(0, 0, 0, 0)',
         font=dict(family='Poppins, sans-serif')
     )
@@ -759,18 +743,18 @@ def create_communication_flow_chart(messages_log):
             marker_color=['#3b82f6', '#ef4444', '#10b981', '#8b5cf6', '#f59e0b', '#00d4ff'],
             text=list(counts.values()),
             textposition='outside',
-            textfont=dict(size=16, weight=700, color='white')
+            textfont=dict(size=16, weight=700, color='#333333')
         )
     ])
     
     fig.update_layout(
-        title=dict(text='Message Distribution by Type', font=dict(size=18, color='white', weight=700)),
+        title=dict(text='Message Distribution by Type', font=dict(size=18, color='#333333', weight=700)),
         xaxis_title='Message Type',
         yaxis_title='Count',
         height=380,
-        plot_bgcolor='rgba(26, 26, 46, 0.5)',
+        plot_bgcolor='#ffffff',
         paper_bgcolor='rgba(0, 0, 0, 0)',
-        font=dict(family='Poppins, sans-serif', color='white')
+        font=dict(family='Poppins, sans-serif', color='#333333')
     )
     
     return fig
@@ -785,7 +769,7 @@ def create_comparison_chart(before_data, after_data, cities):
         marker_color='#ef4444',
         text=[f'{val:.1f}%' for val in before_data],
         textposition='outside',
-        textfont=dict(size=13, color='white', weight=700)
+        textfont=dict(size=13, color='#333333', weight=700)
     ))
     
     fig.add_trace(go.Bar(
@@ -795,28 +779,28 @@ def create_comparison_chart(before_data, after_data, cities):
         marker_color='#10b981',
         text=[f'{val:.1f}%' for val in after_data],
         textposition='outside',
-        textfont=dict(size=13, color='white', weight=700)
+        textfont=dict(size=13, color='#333333', weight=700)
     ))
     
     fig.add_hline(y=78, line_dash="dash", line_color="#ef4444", line_width=3,
                   annotation_text="Crisis Threshold", annotation_position="right",
-                  annotation=dict(font=dict(color='white', size=12)))
+                  annotation=dict(font=dict(color='#333333', size=12)))
     fig.add_hline(y=60, line_dash="dot", line_color="#f59e0b", line_width=2,
                   annotation_text="Warning Level", annotation_position="right",
-                  annotation=dict(font=dict(color='white', size=12)))
+                  annotation=dict(font=dict(color='#333333', size=12)))
     
     fig.update_layout(
         barmode='group',
         title=dict(text='Occupancy Rate: Before vs After Coordination', 
-                  font=dict(size=20, weight=700, color='white')),
+                  font=dict(size=20, weight=700, color='#333333')),
         xaxis_title='City',
         yaxis_title='Occupancy Rate (%)',
         height=480,
-        plot_bgcolor='rgba(26, 26, 46, 0.5)',
+        plot_bgcolor='#ffffff',
         paper_bgcolor='rgba(0, 0, 0, 0)',
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-                   font=dict(color='white', size=12)),
-        font=dict(family='Poppins, sans-serif', color='white')
+                   font=dict(color='#333333', size=12)),
+        font=dict(family='Poppins, sans-serif', color='#333333')
     )
     
     return fig
@@ -844,17 +828,17 @@ def create_crisis_heatmap(env, bayesian):
         colorscale='RdYlGn_r',
         text=[[f'{val:.2f}' for val in row] for row in np.array(data).T],
         texttemplate='%{text}',
-        textfont={"size": 15, "weight": 700, "color": "white"},
-        colorbar=dict(title="Risk Level", titlefont=dict(color='white'), tickfont=dict(color='white'))
+        textfont={"size": 15, "weight": 700, "color": "#333333"},
+        colorbar=dict(title="Risk Level")
     ))
     
     fig.update_layout(
         title=dict(text='Multi-Dimensional Risk Assessment Heatmap', 
-                  font=dict(size=18, color='white', weight=700)),
+                  font=dict(size=18, color='#333333', weight=700)),
         height=340,
-        plot_bgcolor='rgba(26, 26, 46, 0.5)',
+        plot_bgcolor='#ffffff',
         paper_bgcolor='rgba(0, 0, 0, 0)',
-        font=dict(family='Poppins, sans-serif', size=12, color='white')
+        font=dict(family='Poppins, sans-serif', size=12, color='#333333')
     )
     
     return fig
@@ -864,19 +848,19 @@ def create_score_gauge(score):
         mode="gauge+number+delta",
         value=score,
         domain={'x': [0, 1], 'y': [0, 1]},
-        title={'text': "System Performance", 'font': {'size': 22, 'weight': 700, 'color': 'white'}},
+        title={'text': "System Performance", 'font': {'size': 22, 'weight': 700, 'color': '#333333'}},
         delta={'reference': 70, 'increasing': {'color': "#10b981"}},
-        number={'font': {'size': 60, 'color': '#00d4ff', 'weight': 800}},
+        number={'font': {'size': 60, 'color': '#0066cc', 'weight': 800}},
         gauge={
-            'axis': {'range': [None, 100], 'tickwidth': 2, 'tickcolor': "white"},
+            'axis': {'range': [None, 100], 'tickwidth': 2, 'tickcolor': "#333333"},
             'bar': {'color': "#00d4ff", 'thickness': 0.8},
-            'bgcolor': "rgba(26, 26, 46, 0.5)",
+            'bgcolor': "#ffffff",
             'borderwidth': 3,
             'bordercolor': "#00d4ff",
             'steps': [
-                {'range': [0, 50], 'color': 'rgba(239, 68, 68, 0.3)'},
-                {'range': [50, 75], 'color': 'rgba(245, 158, 11, 0.3)'},
-                {'range': [75, 100], 'color': 'rgba(16, 185, 129, 0.3)'}
+                {'range': [0, 50], 'color': 'rgba(239, 68, 68, 0.2)'},
+                {'range': [50, 75], 'color': 'rgba(245, 158, 11, 0.2)'},
+                {'range': [75, 100], 'color': 'rgba(16, 185, 129, 0.2)'}
             ],
             'threshold': {
                 'line': {'color': "#ef4444", 'width': 5},
@@ -890,7 +874,7 @@ def create_score_gauge(score):
         height=340,
         plot_bgcolor='rgba(0, 0, 0, 0)',
         paper_bgcolor='rgba(0, 0, 0, 0)',
-        font=dict(family='Poppins, sans-serif', color='white')
+        font=dict(family='Poppins, sans-serif', color='#333333')
     )
     
     return fig
@@ -930,20 +914,20 @@ def create_agent_performance_chart(env, bayesian):
             marker_color=colors.get(ml_class, '#64748b'),
             text=df_class['Utility Score'],
             textposition='outside',
-            textfont=dict(size=14, weight=700, color='white')
+            textfont=dict(size=14, weight=700, color='#333333')
         ))
     
     fig.update_layout(
         title=dict(text='Agent Utility Scores by Risk Classification',
-                  font=dict(size=18, color='white', weight=700)),
+                  font=dict(size=18, color='#333333', weight=700)),
         xaxis_title='City Agent',
         yaxis_title='Utility Score',
         height=430,
-        plot_bgcolor='rgba(26, 26, 46, 0.5)',
+        plot_bgcolor='#ffffff',
         paper_bgcolor='rgba(0, 0, 0, 0)',
         barmode='group',
-        font=dict(family='Poppins, sans-serif', color='white'),
-        legend=dict(font=dict(color='white'))
+        font=dict(family='Poppins, sans-serif', color='#333333'),
+        legend=dict(font=dict(color='#333333'))
     )
     
     return fig
@@ -957,8 +941,13 @@ def main():
                 <p class="header-subtitle">Multi-Agent Crisis Management System</p>
             </div>
             <div class="logo-container">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" class="logo-enp" alt="ENP Logo" />
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==" class="logo-fifa" alt="FIFA Logo" />
+                <svg width="100" height="60" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="5" y="35" font-family="Arial Black" font-size="28" font-weight="bold" fill="white">ENP</text>
+                </svg>
+                <svg width="90" height="60" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="5" y="25" font-family="Arial Black" font-size="22" font-weight="bold" fill="white">FIFA</text>
+                    <text x="5" y="45" font-family="Arial" font-size="14" fill="#b8d4e8">2026</text>
+                </svg>
             </div>
         </div>
     </div>
@@ -1137,15 +1126,15 @@ def main():
                               use_container_width=True)
                 
                 st.markdown("""
-                <div style='background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
-                            padding: 1.5rem; border-radius: 12px; color: white; margin-top: 1rem;
-                            border: 1px solid rgba(0, 212, 255, 0.2);'>
-                <strong style='color: #00d4ff; font-size: 1.1rem;'>Network Legend:</strong><br><br>
-                <span style='color: #00d4ff;'>● Purple Node:</span> Coordinator (central orchestrator)<br>
+                <div style='background: #ffffff; 
+                            padding: 1.5rem; border-radius: 12px; color: #333333; margin-top: 1rem;
+                            border: 2px solid #e0e0e0; box-shadow: 0 4px 15px rgba(0,0,0,0.08);'>
+                <strong style='color: #0066cc; font-size: 1.1rem;'>Network Legend:</strong><br><br>
+                <span style='color: #00d4ff;'>● Cyan Node:</span> Coordinator (central orchestrator)<br>
                 <span style='color: #10b981;'>● Green Nodes:</span> Stable agents (can offer help)<br>
                 <span style='color: #f59e0b;'>● Orange Nodes:</span> Warning level agents<br>
                 <span style='color: #ef4444;'>● Red Nodes:</span> Crisis agents (need assistance)<br>
-                <span style='color: #4a5568;'>⋯ Dotted Lines:</span> Status reports to coordinator<br>
+                <span style='color: #999999;'>⋯ Dotted Lines:</span> Status reports to coordinator<br>
                 <span style='color: #00d4ff;'>─ Solid Cyan Lines:</span> Resource transfers
                 </div>
                 """, unsafe_allow_html=True)
@@ -1172,7 +1161,7 @@ def main():
                             {'ACTIVE' if state['messages_sent'] > 0 else 'IDLE'}
                         </span>
                         <br>
-                        <small style='color: #b8d4e8;'>Sent: {state['messages_sent']} | Received: {state['messages_received']}</small>
+                        <small style='color: #666666;'>Sent: {state['messages_sent']} | Received: {state['messages_received']}</small>
                     </div>
                     """, unsafe_allow_html=True)
         
@@ -1184,7 +1173,7 @@ def main():
                 msg_class = f"message-{msg.type.lower()}"
                 timestamp = msg.timestamp.strftime("%H:%M:%S")
                 log_html += f'<div class="message-line {msg_class}">'
-                log_html += f'<strong>[{timestamp}]</strong> <span style="color: #00d4ff;">{msg.type}</span> | '
+                log_html += f'<strong>[{timestamp}]</strong> <span style="color: #0066cc;">{msg.type}</span> | '
                 log_html += f'<strong>{msg.sender}</strong> → <strong>{msg.receiver}</strong>: {msg.content}'
                 log_html += '</div>'
             log_html += '</div>'
@@ -1244,13 +1233,13 @@ def main():
                 with col4:
                     st.metric("ML Classification", ml_class)
                 
-                st.markdown(f"<p style='color: #00d4ff; font-weight: 600;'>AI Recommendation: {recommendation}</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='color: #0066cc; font-weight: 600;'>AI Recommendation: {recommendation}</p>", unsafe_allow_html=True)
                 
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.markdown(f"<p style='color: white;'><strong>Messages Sent:</strong> {state['messages_sent']}</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color: #333333;'><strong>Messages Sent:</strong> {state['messages_sent']}</p>", unsafe_allow_html=True)
                 with col2:
-                    st.markdown(f"<p style='color: white;'><strong>Messages Received:</strong> {state['messages_received']}</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='color: #333333;'><strong>Messages Received:</strong> {state['messages_received']}</p>", unsafe_allow_html=True)
                 
                 if state['resources_received'] > 0:
                     st.success(f"✓ Received {state['resources_received']:,} rooms from helper cities")
@@ -1263,10 +1252,10 @@ def main():
             for i, transfer in enumerate(coordinator.transfers_log, 1):
                 st.markdown(f"""
                 <div class="timeline-item">
-                    <strong style='color: #00d4ff; font-size: 1.1rem;'>Transfer #{i}</strong><br><br>
-                    <span style='color: white;'>From: <strong style='color: #10b981;'>{transfer['from'].replace('_', ' ')}</strong> → 
+                    <strong style='color: #0066cc; font-size: 1.1rem;'>Transfer #{i}</strong><br><br>
+                    <span style='color: #333333;'>From: <strong style='color: #10b981;'>{transfer['from'].replace('_', ' ')}</strong> → 
                     To: <strong style='color: #ef4444;'>{transfer['to'].replace('_', ' ')}</strong></span><br>
-                    <span style='color: #b8d4e8;'>Reduction: <strong>{transfer['reduction']*100:.0f}%</strong> | 
+                    <span style='color: #666666;'>Reduction: <strong>{transfer['reduction']*100:.0f}%</strong> | 
                     Crisis Probability: <strong>{transfer['crisis_prob']*100:.1f}%</strong></span>
                 </div>
                 """, unsafe_allow_html=True)
