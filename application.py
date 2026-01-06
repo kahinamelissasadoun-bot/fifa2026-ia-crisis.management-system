@@ -1086,7 +1086,7 @@ def main():
         coordinator = results['coordinator']
         bayesian = results['bayesian']
         
-        st.markdown('<p class="section-header">📊 System Performance Dashboard</p>', unsafe_allow_html=True)
+        st.markdown('<p class="section-header"> System Performance Dashboard</p>', unsafe_allow_html=True)
         
         col1, col2, col3, col4, col5, col6 = st.columns(6)
         
@@ -1117,7 +1117,7 @@ def main():
         st.markdown("---")
         
         if results['use_coordinator']:
-            st.markdown('<p class="section-header">🔗 Agent Communication Network</p>', unsafe_allow_html=True)
+            st.markdown('<p class="section-header"> Agent Communication Network</p>', unsafe_allow_html=True)
             
             col1, col2 = st.columns([3, 2])
             
@@ -1166,7 +1166,7 @@ def main():
                     """, unsafe_allow_html=True)
         
         if show_messages and env.messages_log:
-            st.markdown('<p class="section-header">📝 Real-Time Communication Log</p>', unsafe_allow_html=True)
+            st.markdown('<p class="section-header"> Real-Time Communication Log</p>', unsafe_allow_html=True)
             
             log_html = '<div class="message-log">'
             for msg in env.messages_log[-20:]:
@@ -1198,7 +1198,7 @@ def main():
             st.plotly_chart(create_score_gauge(results['score_final']), 
                           use_container_width=True)
         
-        st.markdown('<p class="section-header">🎯 AI Analysis & Predictions</p>', unsafe_allow_html=True)
+        st.markdown('<p class="section-header"> AI Analysis & Predictions</p>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
@@ -1210,7 +1210,7 @@ def main():
             st.plotly_chart(create_agent_performance_chart(env, bayesian),
                           use_container_width=True)
         
-        st.markdown('<p class="section-header">🏙️ Detailed City Analysis</p>', unsafe_allow_html=True)
+        st.markdown('<p class="section-header"> Detailed City Analysis</p>', unsafe_allow_html=True)
         
         for city in env.cities:
             state = env.get_city_state(city)
@@ -1218,7 +1218,7 @@ def main():
             ml_class = bayesian.classify_risk_ml(state)
             recommendation = bayesian.get_recommendations(state)
             
-            with st.expander(f"🏙️ {city.replace('_', ' ')} - {state['stress_level']} STATUS", expanded=False):
+            with st.expander(f" {city.replace('_', ' ')} - {state['stress_level']} STATUS", expanded=False):
                 col1, col2, col3, col4 = st.columns(4)
                 
                 with col1:
@@ -1247,7 +1247,7 @@ def main():
                     st.info(f"→ Provided {state['resources_given']:,} rooms to crisis cities")
         
         if results['use_coordinator'] and coordinator.transfers_log:
-            st.markdown('<p class="section-header">🔄 Coordination Timeline</p>', unsafe_allow_html=True)
+            st.markdown('<p class="section-header">Coordination Timeline</p>', unsafe_allow_html=True)
             
             for i, transfer in enumerate(coordinator.transfers_log, 1):
                 st.markdown(f"""
@@ -1260,7 +1260,7 @@ def main():
                 </div>
                 """, unsafe_allow_html=True)
         
-        st.markdown('<p class="section-header">📈 Detailed Statistics</p>', unsafe_allow_html=True)
+        st.markdown('<p class="section-header"> Detailed Statistics</p>', unsafe_allow_html=True)
         
         stats_data = []
         for city in env.cities:
@@ -1287,7 +1287,7 @@ def main():
         with export_col2:
             csv = df_stats.to_csv(index=False)
             st.download_button(
-                label="📥 Export Report (CSV)",
+                label=" Export Report (CSV)",
                 data=csv,
                 file_name=f"fifa2026_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                 mime="text/csv"
@@ -1305,3 +1305,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
