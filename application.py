@@ -14,7 +14,6 @@ import networkx as nx
 from datetime import datetime
 import json
 import base64
-from pathlib import Path
 
 st.set_page_config(
     page_title="FIFA 2026 AI Crisis Manager",
@@ -22,13 +21,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-def get_image_base64(image_path):
-    try:
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
-    except:
-        return None
 
 st.markdown("""
 <style>
@@ -67,18 +59,6 @@ st.markdown("""
         background: linear-gradient(90deg, #00d4ff 0%, #0099ff 50%, #0066cc 100%);
     }
     
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 2rem;
-    }
-    
-    .header-text {
-        flex: 1;
-        text-align: center;
-    }
-    
     .header-title {
         color: #ffffff;
         font-size: 3rem;
@@ -96,20 +76,21 @@ st.markdown("""
         letter-spacing: 1px;
     }
     
-    .logo-box {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(0, 212, 255, 0.3);
+    .logo-container {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
     }
     
-    .logo-text {
-        color: white;
-        font-size: 2rem;
-        font-weight: 800;
-        margin: 0;
-        letter-spacing: 2px;
+    .logo-enp {
+        width: 100px;
+        height: auto;
+        filter: brightness(1.2);
+    }
+    
+    .logo-fifa {
+        width: 90px;
+        height: auto;
     }
     
     .metric-card {
@@ -847,7 +828,8 @@ def create_crisis_heatmap(env, bayesian):
         colorscale='RdYlGn_r',
         text=[[f'{val:.2f}' for val in row] for row in np.array(data).T],
         texttemplate='%{text}',
-        textfont={"size": 15, "weight": 700, "color": "#333333"}
+        textfont={"size": 15, "weight": 700, "color": "#333333"},
+        colorbar=dict(title="Risk Level")
     ))
     
     fig.update_layout(
@@ -907,7 +889,7 @@ def create_agent_performance_chart(env, bayesian):
         
         utility = 10 if state['occupancy_rate'] < 0.45 else \
                   7 if 0.45 <= state['occupancy_rate'] < 0.65 else \
-                  5 if 0.65 <= state['occupancy_rate'] < 0.78 else 3
+                  5 if 0.65 <= state['occupancy_rate'] < 0.78 else 13
         
         agents_data.append({
             'Agent': city.replace('_', ' '),
@@ -951,135 +933,78 @@ def create_agent_performance_chart(env, bayesian):
     return fig
 
 def main():
-    enp_logo = get_image_base64("asset/Logo-ENP-1.jpg") or get_image_base64("Logo-ENP-1.jpg")
-    fifa_logo = get_image_base64("asset/Capture_d_ecran_2026-01-06_175605-removebg-preview.jpg") or get_image_base64("Capture_d_ecran_2026-01-06_175605-removebg-preview.jpg")
-    
-    header_html = '<div class="header-container"><div class="header-content">'
-    
-    if enp_logo:
-        header_html += f'''
-        <div style="flex: 0 0 140px;">
-            <img src="data:image/jpeg;base64,{enp_logo}" 
-                 style="width: 130px; height: auto; border-radius: 12px; 
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-                        border: 2px solid rgba(0, 212, 255, 0.3);">
+    st.markdown("""
+    <div class="header-container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="flex: 1;">
+                <h1 class="header-title">FIFA World Cup 2026</h1>
+                <p class="header-subtitle">Multi-Agent Crisis Management System</p>
+            </div>
+            <div class="logo-container">
+                <svg width="100" height="60" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="5" y="35" font-family="Arial Black" font-size="28" font-weight="bold" fill="white">ENP</text>
+                </svg>
+                <svg width="90" height="60" viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                    <text x="5" y="25" font-family="Arial Black" font-size="22" font-weight="bold" fill="white">FIFA</text>
+                    <text x="5" y="45" font-family="Arial" font-size="14" fill="#b8d4e8">2026</text>
+                </svg>
+            </div>
         </div>
-        '''
-    else:
-        header_html += '<div style="flex: 0 0 140px;"><div class="logo-box"><p class="logo-text">ENP</p></div></div>'
+    </div>
+    """, unsafe_allow_html=True)
     
-    header_html += '''
-        <div class="header-text" style="flex: 1;">
-            <h1 class="header-title">FIFA World Cup 2026</h1>
-            <p class="header-subtitle">Multi-Agent Crisis Management System</p>
-        </div>
-    '''
-    
-    if fifa_logo:
-        header_html += f'''
-        <div style="flex: 0 0 140px; text-align: right;">
-            <img src="data:image/jpeg;base64,{fifa_logo}" 
-                 style="width: 130px; height: auto; border-radius: 12px; 
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-                        border: 2px solid rgba(0, 212, 255, 0.3);">
-        </div>
-        '''
-    else:
-        header_html += '<div style="flex: 0 0 140px;"><div class="logo-box"><p class="logo-text">FIFA</p><p class="logo-subtext">2026</p></div></div>'
-    
-    header_html += '</div></div>'
-    
-    st.markdown(header_html, unsafe_allow_html=True)
-    
-    st.sidebar.markdown("## Configuration Panel")
-    
-    if 'la_occ' not in st.session_state:
-        st.session_state.la_occ = 0.60
-    if 'mx_occ' not in st.session_state:
-        st.session_state.mx_occ = 0.47
-    if 'ny_occ' not in st.session_state:
-        st.session_state.ny_occ = 0.48
-    if 'to_occ' not in st.session_state:
-        st.session_state.to_occ = 0.84
-    
-    st.sidebar.markdown("### Quick Scenarios")
-    
-    col1, col2, col3 = st.sidebar.columns(3)
-    
-    if col1.button("Normal", use_container_width=True):
-        st.session_state.la_occ = 0.55
-        st.session_state.mx_occ = 0.50
-        st.session_state.ny_occ = 0.48
-        st.session_state.to_occ = 0.52
-    
-    if col2.button("Warning", use_container_width=True):
-        st.session_state.la_occ = 0.72
-        st.session_state.mx_occ = 0.50
-        st.session_state.ny_occ = 0.48
-        st.session_state.to_occ = 0.68
-    
-    if col3.button("Crisis", use_container_width=True):
-        st.session_state.la_occ = 0.88
-        st.session_state.mx_occ = 0.39
-        st.session_state.ny_occ = 0.42
-        st.session_state.to_occ = 0.91
-    
-    st.sidebar.markdown("---")
+    st.sidebar.markdown("## ⚙️ Configuration Panel")
     st.sidebar.markdown("### City Occupancy Parameters")
     
-    la_occ = st.sidebar.slider(
-        "Los Angeles",
-        min_value=0.30,
-        max_value=0.95,
-        value=st.session_state.la_occ,
-        step=0.01,
-        format="%.2f",
-        key="slider_la"
-    )
+    cities_config = {}
+    default_values = {
+        'Los_Angeles': 0.60,
+        'Mexico_City': 0.47,
+        'New_York': 0.48,
+        'Toronto': 0.84
+    }
     
-    mx_occ = st.sidebar.slider(
-        "Mexico City",
-        min_value=0.30,
-        max_value=0.95,
-        value=st.session_state.mx_occ,
-        step=0.01,
-        format="%.2f",
-        key="slider_mx"
-    )
-    
-    ny_occ = st.sidebar.slider(
-        "New York",
-        min_value=0.30,
-        max_value=0.95,
-        value=st.session_state.ny_occ,
-        step=0.01,
-        format="%.2f",
-        key="slider_ny"
-    )
-    
-    to_occ = st.sidebar.slider(
-        "Toronto",
-        min_value=0.30,
-        max_value=0.95,
-        value=st.session_state.to_occ,
-        step=0.01,
-        format="%.2f",
-        key="slider_to"
-    )
-    
-    st.session_state.la_occ = la_occ
-    st.session_state.mx_occ = mx_occ
-    st.session_state.ny_occ = ny_occ
-    st.session_state.to_occ = to_occ
+    for city, default in default_values.items():
+        cities_config[city] = st.sidebar.slider(
+            f"{city.replace('_', ' ')}",
+            min_value=0.30,
+            max_value=0.95,
+            value=default,
+            step=0.01,
+            format="%.2f"
+        )
     
     st.sidebar.markdown("---")
     st.sidebar.markdown("### System Configuration")
     
     use_coordinator = st.sidebar.checkbox("Enable Coordinator Agent", value=True)
     show_messages = st.sidebar.checkbox("Show Communication Log", value=True)
+    num_cycles = st.sidebar.selectbox("Simulation Cycles", [1, 2, 3], index=1)
     
     st.sidebar.markdown("---")
-    run_button = st.sidebar.button("RUN SIMULATION", type="primary")
+    st.sidebar.markdown("### Quick Scenarios")
+    
+    col1, col2, col3 = st.sidebar.columns(3)
+    
+    if col1.button("Normal"):
+        for key in cities_config:
+            cities_config[key] = np.random.uniform(0.45, 0.65)
+        st.rerun()
+    
+    if col2.button("Warning"):
+        cities_config['Los_Angeles'] = 0.72
+        cities_config['Toronto'] = 0.68
+        st.rerun()
+    
+    if col3.button("Crisis"):
+        cities_config['Los_Angeles'] = 0.88
+        cities_config['Toronto'] = 0.91
+        cities_config['New_York'] = 0.42
+        cities_config['Mexico_City'] = 0.39
+        st.rerun()
+    
+    st.sidebar.markdown("---")
+    run_button = st.sidebar.button("▶ RUN SIMULATION", type="primary")
     
     if run_button or 'initialized' not in st.session_state:
         st.session_state.initialized = True
@@ -1087,28 +1012,28 @@ def main():
         with st.spinner("Initializing multi-agent system..."):
             cities_data = {
                 'Los_Angeles': {
-                    'occupancy': la_occ,
+                    'occupancy': cities_config['Los_Angeles'],
                     'capacity': 6659579,
                     'cluster': 1,
                     'popularity': 2,
                     'matches': 8
                 },
                 'Mexico_City': {
-                    'occupancy': mx_occ,
+                    'occupancy': cities_config['Mexico_City'],
                     'capacity': 3736279,
                     'cluster': 0,
                     'popularity': 3,
                     'matches': 6
                 },
                 'New_York': {
-                    'occupancy': ny_occ,
+                    'occupancy': cities_config['New_York'],
                     'capacity': 7240856,
                     'cluster': 1,
                     'popularity': 1,
                     'matches': 10
                 },
                 'Toronto': {
-                    'occupancy': to_occ,
+                    'occupancy': cities_config['Toronto'],
                     'capacity': 2598127,
                     'cluster': 0,
                     'popularity': 4,
@@ -1161,7 +1086,7 @@ def main():
         coordinator = results['coordinator']
         bayesian = results['bayesian']
         
-        st.markdown('<p class="section-header">System Performance Dashboard</p>', unsafe_allow_html=True)
+        st.markdown('<p class="section-header"> System Performance Dashboard</p>', unsafe_allow_html=True)
         
         col1, col2, col3, col4, col5, col6 = st.columns(6)
         
@@ -1192,7 +1117,7 @@ def main():
         st.markdown("---")
         
         if results['use_coordinator']:
-            st.markdown('<p class="section-header">Agent Communication Network</p>', unsafe_allow_html=True)
+            st.markdown('<p class="section-header"> Agent Communication Network</p>', unsafe_allow_html=True)
             
             col1, col2 = st.columns([3, 2])
             
@@ -1205,12 +1130,12 @@ def main():
                             padding: 1.5rem; border-radius: 12px; color: #333333; margin-top: 1rem;
                             border: 2px solid #e0e0e0; box-shadow: 0 4px 15px rgba(0,0,0,0.08);'>
                 <strong style='color: #0066cc; font-size: 1.1rem;'>Network Legend:</strong><br><br>
-                <span style='color: #00d4ff;'>Cyan Node:</span> Coordinator (central orchestrator)<br>
-                <span style='color: #10b981;'>Green Nodes:</span> Stable agents (can offer help)<br>
-                <span style='color: #f59e0b;'>Orange Nodes:</span> Warning level agents<br>
-                <span style='color: #ef4444;'>Red Nodes:</span> Crisis agents (need assistance)<br>
-                <span style='color: #999999;'>Dotted Lines:</span> Status reports to coordinator<br>
-                <span style='color: #00d4ff;'>Solid Cyan Lines:</span> Resource transfers
+                <span style='color: #00d4ff;'>● Cyan Node:</span> Coordinator (central orchestrator)<br>
+                <span style='color: #10b981;'>● Green Nodes:</span> Stable agents (can offer help)<br>
+                <span style='color: #f59e0b;'>● Orange Nodes:</span> Warning level agents<br>
+                <span style='color: #ef4444;'>● Red Nodes:</span> Crisis agents (need assistance)<br>
+                <span style='color: #999999;'>⋯ Dotted Lines:</span> Status reports to coordinator<br>
+                <span style='color: #00d4ff;'>─ Solid Cyan Lines:</span> Resource transfers
                 </div>
                 """, unsafe_allow_html=True)
             
@@ -1241,7 +1166,7 @@ def main():
                     """, unsafe_allow_html=True)
         
         if show_messages and env.messages_log:
-            st.markdown('<p class="section-header">Real-Time Communication Log</p>', unsafe_allow_html=True)
+            st.markdown('<p class="section-header"> Real-Time Communication Log</p>', unsafe_allow_html=True)
             
             log_html = '<div class="message-log">'
             for msg in env.messages_log[-20:]:
@@ -1273,7 +1198,7 @@ def main():
             st.plotly_chart(create_score_gauge(results['score_final']), 
                           use_container_width=True)
         
-        st.markdown('<p class="section-header">AI Analysis & Predictions</p>', unsafe_allow_html=True)
+        st.markdown('<p class="section-header"> AI Analysis & Predictions</p>', unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         
@@ -1285,7 +1210,7 @@ def main():
             st.plotly_chart(create_agent_performance_chart(env, bayesian),
                           use_container_width=True)
         
-        st.markdown('<p class="section-header">Detailed City Analysis</p>', unsafe_allow_html=True)
+        st.markdown('<p class="section-header"> Detailed City Analysis</p>', unsafe_allow_html=True)
         
         for city in env.cities:
             state = env.get_city_state(city)
@@ -1293,7 +1218,7 @@ def main():
             ml_class = bayesian.classify_risk_ml(state)
             recommendation = bayesian.get_recommendations(state)
             
-            with st.expander(f"{city.replace('_', ' ')} - {state['stress_level']} STATUS", expanded=False):
+            with st.expander(f" {city.replace('_', ' ')} - {state['stress_level']} STATUS", expanded=False):
                 col1, col2, col3, col4 = st.columns(4)
                 
                 with col1:
@@ -1317,9 +1242,9 @@ def main():
                     st.markdown(f"<p style='color: #333333;'><strong>Messages Received:</strong> {state['messages_received']}</p>", unsafe_allow_html=True)
                 
                 if state['resources_received'] > 0:
-                    st.success(f"Received {state['resources_received']:,} rooms from helper cities")
+                    st.success(f"✓ Received {state['resources_received']:,} rooms from helper cities")
                 if state['resources_given'] > 0:
-                    st.info(f"Provided {state['resources_given']:,} rooms to crisis cities")
+                    st.info(f"→ Provided {state['resources_given']:,} rooms to crisis cities")
         
         if results['use_coordinator'] and coordinator.transfers_log:
             st.markdown('<p class="section-header">Coordination Timeline</p>', unsafe_allow_html=True)
@@ -1335,7 +1260,7 @@ def main():
                 </div>
                 """, unsafe_allow_html=True)
         
-        st.markdown('<p class="section-header">Detailed Statistics</p>', unsafe_allow_html=True)
+        st.markdown('<p class="section-header"> Detailed Statistics</p>', unsafe_allow_html=True)
         
         stats_data = []
         for city in env.cities:
@@ -1362,7 +1287,7 @@ def main():
         with export_col2:
             csv = df_stats.to_csv(index=False)
             st.download_button(
-                label="Export Report (CSV)",
+                label=" Export Report (CSV)",
                 data=csv,
                 file_name=f"fifa2026_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                 mime="text/csv"
@@ -1372,9 +1297,9 @@ def main():
     <div class="footer-container">
         <p class="footer-title">FIFA WORLD CUP 2026 - MULTI-AGENT CRISIS MANAGEMENT SYSTEM</p>
         <p class="footer-authors">Developed by <strong>SADOUN Kahina Melissa</strong> & <strong>BENDAIKHA Meriem</strong></p>
-        <p class="footer-subtitle">BIG DATA x IIA Project</p>
+        <p class="footer-subtitle">BIG DATA × IIA Project</p>
         <p class="footer-subtitle">Coordinated by <strong>Madam BELDJOUDI Samia</strong></p>
-        <p class="footer-subtitle" style="margin-top: 1rem; font-size: 0.85rem;">Ecole Nationale Polytechnique - 2026</p>
+        <p class="footer-subtitle" style="margin-top: 1rem; font-size: 0.85rem;">École Nationale Polytechnique - 2026</p>
     </div>
     """, unsafe_allow_html=True)
 
